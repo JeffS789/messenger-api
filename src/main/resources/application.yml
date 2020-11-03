@@ -1,0 +1,14 @@
+server:
+  port: 8082
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://localhost:3306/artfx?serverTimezone=UTC
+    username: root
+    password: root
+
+jwt:
+  secret-key: uvdNeCjWWJ9`;Y?^yA}Jmp(Q}!W'?
