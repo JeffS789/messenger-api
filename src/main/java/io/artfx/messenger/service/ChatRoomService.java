@@ -1,7 +1,6 @@
 package io.artfx.messenger.service;
 
 import io.artfx.messenger.entity.ChatRoom;
-import io.artfx.messenger.entity.User;
 import io.artfx.messenger.repository.ChatRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,14 +13,6 @@ public class ChatRoomService {
 
     @Autowired
     private ChatRoomRepository chatRoomRepository;
-
-    @Autowired
-    private UserService userService;
-
-//    @Transactional(readOnly = true)
-//    public List<ChatRoom> getChatRooms() {
-//
-//    }
 
     @Transactional
     public String getChatId(String senderUuid, String recipientUuid) {

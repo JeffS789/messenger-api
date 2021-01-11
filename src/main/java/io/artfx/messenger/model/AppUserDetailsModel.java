@@ -1,47 +1,31 @@
 package io.artfx.messenger.model;
 
-import io.artfx.messenger.entity.User;
-import lombok.extern.slf4j.Slf4j;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Slf4j
+@Data
+@Builder
+@ToString
+@AllArgsConstructor
 public class AppUserDetailsModel implements UserDetails {
 
     private String username;
     private String password;
-    private boolean active;
+    private String uuid;
+    private String organizationName;
+    private String organizationUuid;
+    private String firstName;
+    private String lastName;
+    private String displayName;
+    private Boolean verified;
+    private Boolean active;
     private List<GrantedAuthority> authorities;
-
-    public AppUserDetailsModel(User user) {
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.active = user.isActive();
-        this.authorities = Arrays.stream(user.getRoles().split(","))
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
 
     @Override
     public boolean isAccountNonExpired() {
