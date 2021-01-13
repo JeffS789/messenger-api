@@ -1,20 +1,19 @@
 package io.artfx.messenger.service;
 
-import io.artfx.messenger.enums.MessageStatus;
 import io.artfx.messenger.entity.ChatMessage;
+import io.artfx.messenger.enums.MessageStatus;
 import io.artfx.messenger.repository.ChatMessageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class ChatMessageService {
-    @Autowired
-    private ChatMessageRepository repository;
-    @Autowired private ChatRoomService chatRoomService;
+
+    private final ChatMessageRepository repository;
+    private final ChatRoomService chatRoomService;
 
     public ChatMessage save(ChatMessage chatMessage) {
         chatMessage.setStatus(MessageStatus.RECEIVED);

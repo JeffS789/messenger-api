@@ -1,9 +1,9 @@
 package io.artfx.messenger.service;
 
+import com.mysql.cj.util.StringUtils;
 import io.artfx.messenger.entity.User;
 import io.artfx.messenger.repository.UserRepository;
-import com.mysql.cj.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,17 +11,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public List<User> searchUsers(String query) {
         if (StringUtils.isNullOrEmpty(query)) {
             return List.of();
         }
-        return userRepository.findByUsernameContainsIgnoreCase(query);
+        return userRepository.findByProfileDisplayNameContainsOrProfileFirstNameContainsOrProfileLastNameContains(query,query,query);
     }
 
     @Transactional(readOnly = true)

@@ -1,22 +1,19 @@
 package io.artfx.messenger.service;
 
 import io.artfx.messenger.entity.ChatRoom;
-import io.artfx.messenger.entity.User;
 import io.artfx.messenger.repository.ChatRoomRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class ChatRoomService {
 
-    @Autowired
-    private ChatRoomRepository chatRoomRepository;
-
-    @Autowired
-    private UserService userService;
+    private final ChatRoomRepository chatRoomRepository;
+    private final UserService userService;
 
 //    @Transactional(readOnly = true)
 //    public List<ChatRoom> getChatRooms() {
