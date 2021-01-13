@@ -17,7 +17,8 @@ import java.util.Date;
 @Entity
 @Table(indexes = {
         @Index(name = "chat_message_sender_uuid_idx0", columnList = "sender_uuid"),
-        @Index(name = "chat_message_recipient_uuid_idx0", columnList = "recipient_uuid")
+        @Index(name = "chat_message_recipient_uuid_idx0", columnList = "recipient_uuid"),
+        @Index(name = "chat_message_chat_id_idx0", columnList = "chatId")
 })
 public class ChatMessage extends BaseEntity {
 
@@ -35,5 +36,6 @@ public class ChatMessage extends BaseEntity {
     private String chatId;
     private String content;
     private Date timestamp;
+    @Enumerated(EnumType.STRING)
     private MessageStatus status;
 }

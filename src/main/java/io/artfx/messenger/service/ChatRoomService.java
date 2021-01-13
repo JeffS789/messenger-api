@@ -22,8 +22,6 @@ public class ChatRoomService {
 
     @Transactional
     public String getChatId(String senderUuid, String recipientUuid) {
-//        User sender = userService.getUser(username);
-//        User recipient = userService.getUserByUuid(recipientUuid);
 
         Optional<ChatRoom> chatRoom = chatRoomRepository.findBySenderUuidAndRecipientUuid(senderUuid, recipientUuid);
 
