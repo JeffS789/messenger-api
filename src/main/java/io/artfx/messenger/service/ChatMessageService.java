@@ -22,8 +22,7 @@ public class ChatMessageService {
     @Transactional
     public ChatMessage save(ChatMessage chatMessage) {
         chatMessage.setStatus(MessageStatus.RECEIVED);
-        chatMessageRepository.save(chatMessage);
-        return chatMessage;
+        return chatMessageRepository.save(chatMessage);
     }
 
     @Transactional
@@ -33,8 +32,11 @@ public class ChatMessageService {
         }
         String chatId = chatRoomService.getChatId(senderUuid, recipientUuid);
         List<ChatMessage> messages = chatMessageRepository.findByChatIdOrderByCreatedDateAsc(chatId);
-        messages.forEach(message ->
-            message.setStatus(MessageStatus.DELIVERED)
+        messages.forEach(message -> {
+                if (userUuid.equals(message.getRecipientUuid())) {
+                    message.setStatus(MessageStatus.DELIVERED);
+                }
+            }
         );
         return messages;
     }

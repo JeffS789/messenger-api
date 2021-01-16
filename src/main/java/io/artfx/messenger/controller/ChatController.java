@@ -30,5 +30,4 @@ public class ChatController {
         messagingTemplate.convertAndSendToUser(
                 chatMessage.getRecipientUuid(),"/queue/messages", new ChatNotification(saved.getUuid(), saved.getChatId(), saved.getSenderUuid()));
     }
-
 }

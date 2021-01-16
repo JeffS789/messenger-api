@@ -15,11 +15,6 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final UserService userService;
 
-//    @Transactional(readOnly = true)
-//    public List<ChatRoom> getChatRooms() {
-//
-//    }
-
     @Transactional
     public String getChatId(String senderUuid, String recipientUuid) {
 
