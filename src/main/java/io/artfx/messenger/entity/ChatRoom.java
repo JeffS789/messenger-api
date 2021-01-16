@@ -23,4 +23,5 @@ public class ChatRoom extends BaseEntity {
     private String senderUuid;
     @Column(name = "recipient_uuid")
     private String recipientUuid;
+    private boolean visible;
 }

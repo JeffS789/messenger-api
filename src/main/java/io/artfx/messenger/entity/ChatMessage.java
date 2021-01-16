@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Date;
 
 @Data
@@ -35,7 +36,7 @@ public class ChatMessage extends BaseEntity {
     private String recipientUuid;
     private String chatId;
     private String content;
-    private Date timestamp;
+    private Instant timestamp;
     @Enumerated(EnumType.STRING)
     private MessageStatus status;
 }

@@ -12,6 +12,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.time.Instant;
+
 @Slf4j
 @Controller
 @AllArgsConstructor
@@ -26,6 +28,7 @@ public class ChatController {
         ChatMessage chatMessage = new ChatMessage(message);
         String chatId = chatRoomService.getChatId(chatMessage.getSenderUuid(), chatMessage.getRecipientUuid());
         chatMessage.setChatId(chatId);
+        chatMessage.setTimestamp(Instant.now());
         ChatMessage saved = chatMessageService.save(chatMessage);
         messagingTemplate.convertAndSendToUser(
                 chatMessage.getRecipientUuid(),"/queue/messages", new ChatNotification(saved.getUuid(), saved.getChatId(), saved.getSenderUuid()));
