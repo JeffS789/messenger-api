@@ -2,6 +2,7 @@ package io.artfx.messenger.model;
 
 import io.artfx.messenger.entity.User;
 import io.artfx.messenger.enums.RoleType;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,12 +10,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
+@Data
 public class AppUserDetailsModel implements UserDetails {
 
     private String username;

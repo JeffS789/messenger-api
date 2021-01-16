@@ -1,10 +1,13 @@
 package io.artfx.messenger.controller;
 
 import io.artfx.messenger.entity.ChatMessage;
+import io.artfx.messenger.model.AppUserDetailsModel;
 import io.artfx.messenger.service.ChatMessageService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,10 +21,16 @@ public class MessageController {
     private final ChatMessageService chatMessageService;
 
     @GetMapping("/api/messages")
-    public List<ChatMessage> getMessages(
+    public List<ChatMessage> getMessages(Authentication authentication,
             @RequestParam("senderUuid") String senderUuid,
             @RequestParam("recipientUuid") String recipientUuid) {
-        return chatMessageService.findChatMessages(senderUuid, recipientUuid);
+        AppUserDetailsModel userDetails = (AppUserDetailsModel) authentication.getPrincipal();
+        return chatMessageService.findChatMessages(userDetails.getUuid(), senderUuid, recipientUuid);
     }
 
+    @GetMapping("/api/messages/{uuid}")
+    public ChatMessage getMessage(Authentication authentication, @PathVariable String uuid) {
+        AppUserDetailsModel userDetails = (AppUserDetailsModel) authentication.getPrincipal();
+        return chatMessageService.findByUuid(userDetails.getUuid(), uuid);
+    }
 }

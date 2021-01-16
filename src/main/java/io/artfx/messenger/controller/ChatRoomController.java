@@ -18,10 +18,4 @@ public class ChatRoomController {
     public String getChatRoom(Authentication authentication, String recipientUuid) {
         return chatRoomService.getChatId(authentication.getName(), recipientUuid);
     }
-
-//    @GetMapping
-//    public List<ChatRoom> getChatRooms() {
-//
-//    }
-
 }

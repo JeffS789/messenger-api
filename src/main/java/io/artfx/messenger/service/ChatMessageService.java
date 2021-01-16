@@ -4,55 +4,53 @@ import io.artfx.messenger.entity.ChatMessage;
 import io.artfx.messenger.enums.MessageStatus;
 import io.artfx.messenger.repository.ChatMessageRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class ChatMessageService {
 
-    private final ChatMessageRepository repository;
+    private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomService chatRoomService;
 
+    @Transactional
     public ChatMessage save(ChatMessage chatMessage) {
         chatMessage.setStatus(MessageStatus.RECEIVED);
-        repository.save(chatMessage);
+        chatMessageRepository.save(chatMessage);
         return chatMessage;
     }
 
-    public long countNewMessages(String senderId, String recipientId) {
-        return repository.countBySenderUuidAndRecipientUuidAndStatus(
-                senderId, recipientId, MessageStatus.RECEIVED);
-    }
-
-    public List<ChatMessage> findChatMessages(String senderUuid, String recipientUuid) {
-        String chatId = chatRoomService.getChatId(senderUuid, recipientUuid);
-        List<ChatMessage> messages = repository.findByChatIdOrderByCreatedDateAsc(chatId);
-        if(messages.size() > 0) {
-            updateStatuses(senderUuid, recipientUuid, MessageStatus.DELIVERED);
+    @Transactional
+    public List<ChatMessage> findChatMessages(String userUuid, String senderUuid, String recipientUuid) {
+        if (!userUuid.equals(senderUuid) && !userUuid.equals(recipientUuid)) {
+            throw new RuntimeException("Not authorization to retrieve messages");
         }
+        String chatId = chatRoomService.getChatId(senderUuid, recipientUuid);
+        List<ChatMessage> messages = chatMessageRepository.findByChatIdOrderByCreatedDateAsc(chatId);
+        messages.forEach(message ->
+            message.setStatus(MessageStatus.DELIVERED)
+        );
         return messages;
     }
 
-    public ChatMessage findById(String id) {
-        return repository
-                .findById(id)
-                .map(chatMessage -> {
-                    chatMessage.setStatus(MessageStatus.DELIVERED);
-                    return repository.save(chatMessage);
-                })
-                .orElseThrow(() ->
-                        new RuntimeException("can't find message (" + id + ")"));
+    @Transactional
+    public ChatMessage findByUuid(String userUuid, String uuid) {
+        Optional<ChatMessage> chatMessage = chatMessageRepository.findByUuid(uuid, userUuid);
+        chatMessage.orElseThrow(() -> new RuntimeException("Unable to retrieve message with uuid: " + uuid));
+        ChatMessage message = chatMessage.get();
+        message.setStatus(MessageStatus.DELIVERED);
+        return message;
     }
 
-    public void updateStatuses(String senderId, String recipientId, MessageStatus status) {
-
-//        Query query = new Query(
-//                Criteria
-//                        .where("senderId").is(senderId)
-//                        .and("recipientId").is(recipientId));
-//        Update update = Update.update("status", status);
-//        mongoOperations.updateMulti(query, update, ChatMessage.class);
+    @Transactional(readOnly = true)
+    public long countNewMessages(String senderId, String recipientId) {
+        return chatMessageRepository.countBySenderUuidAndRecipientUuidAndStatus(
+                senderId, recipientId, MessageStatus.RECEIVED);
     }
 }
