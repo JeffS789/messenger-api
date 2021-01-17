@@ -3,6 +3,7 @@ package io.artfx.messenger.service;
 import io.artfx.messenger.entity.ChatMessage;
 import io.artfx.messenger.entity.ChatRoom;
 import io.artfx.messenger.entity.User;
+import io.artfx.messenger.enums.MessageStatus;
 import io.artfx.messenger.model.ChatRoomView;
 import io.artfx.messenger.repository.ChatMessageRepository;
 import io.artfx.messenger.repository.ChatRoomRepository;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -27,19 +30,25 @@ public class ChatRoomService {
     public List<ChatRoomView> findChatRooms(String userUuid) {
         // First chat rooms with user being equal to either sender or recipient
         List<ChatRoomView> chatRoomViews = new ArrayList<>();
-        List<ChatRoom> chatRooms = chatRoomRepository.findAllVisibleChatRooms(userUuid);
-        chatRooms.forEach(chatRoom -> {
+        Map<String, ChatRoom> chatRoomMap = new HashMap<>();
+        chatRoomRepository.findAllVisibleChatRooms(userUuid)
+                .forEach(chatRoom ->
+                    chatRoomMap.put(chatRoom.getChatId(), chatRoom)
+                );
+        chatRoomMap.forEach((k, v) -> {
             User user = null;
-            if (!chatRoom.getRecipientUuid().equals(userUuid)) {
-                user = userService.getUserByUuid(chatRoom.getRecipientUuid());
+            if (!userUuid.equals(v.getRecipientUuid())) {
+                user = userService.getUserByUuid(v.getRecipientUuid());
             }
-            if (!chatRoom.getSenderUuid().equals(userUuid)) {
-                user = userService.getUserByUuid(chatRoom.getSenderUuid());
+            if (!userUuid.equals(v.getSenderUuid())) {
+                user = userService.getUserByUuid(v.getSenderUuid());
             }
             if (user == null) {
+                // Dont throw an error here this is a legit scenero, what if the other user deletes their account?
                 throw new RuntimeException("Unable to find user form either Sender or Recipient");
             }
-            Optional<ChatMessage> chatMessage = chatMessageRepository.findFirstBySenderUuidAndRecipientUuidOrderByTimestampAsc(user.getUuid(), userUuid);
+            String chatId = getChatId(user.getUuid(), userUuid);
+            Optional<ChatMessage> chatMessage = chatMessageRepository.findFirstByChatIdOrderByTimestampDesc(chatId);
             ChatMessage message = null;
             if (chatMessage.isPresent()) {
                 message = chatMessage.get();
@@ -49,6 +58,7 @@ public class ChatRoomService {
                     .lastMessage(message != null ? message.getContent(): null)
                     .lastMessageTimestamp(message != null ? message.getTimestamp(): null)
                     .profile(user.getProfile())
+                    .isNewMessage(message != null && (MessageStatus.RECEIVED).equals(message.getStatus()))
                     .build());
         });
         return chatRoomViews;
@@ -66,6 +76,7 @@ public class ChatRoomService {
                 .chatId(chatId)
                 .senderUuid(senderUuid)
                 .recipientUuid(recipientUuid)
+                .visible(true)
                 .build();
 
         ChatRoom recipientSender = ChatRoom
@@ -73,6 +84,7 @@ public class ChatRoomService {
                 .chatId(chatId)
                 .senderUuid(recipientUuid)
                 .recipientUuid(senderUuid)
+                .visible(true)
                 .build();
         chatRoomRepository.save(senderRecipient);
         chatRoomRepository.save(recipientSender);
