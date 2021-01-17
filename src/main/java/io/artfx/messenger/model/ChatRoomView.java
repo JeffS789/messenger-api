@@ -13,8 +13,9 @@ import java.time.Instant;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChatRoomView {
+    private String chatId;
     private String userUuid;
-    private boolean isNewMessage;
+    private Boolean isNewMessage;
     private Profile profile;
     private Instant lastMessageTimestamp;
     private String lastMessage;

@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, String> {
     long countBySenderUuidAndRecipientUuidAndStatus(String senderUuid, String recipientUuid, MessageStatus status);
     List<ChatMessage> findByChatIdOrderByCreatedDateAsc(String chatId);
-    Optional<ChatMessage> findFirstByChatIdOrderByTimestampDesc(String chatId);
+    ChatMessage findFirstByChatIdOrderByTimestampDesc(String chatId);
     @Query("select m from ChatMessage m where m.uuid = :uuid and (m.senderUuid = :userUuid or m.recipientUuid = :userUuid)")
     Optional<ChatMessage> findByUuid(String uuid, String userUuid);
 }
