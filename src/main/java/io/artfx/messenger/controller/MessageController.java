@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/messages/api/messages")
+@RequestMapping("/api/messages")
 public class MessageController {
 
     private final ChatMessageService chatMessageService;
