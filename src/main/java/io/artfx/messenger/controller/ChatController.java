@@ -31,6 +31,13 @@ public class ChatController {
         chatMessage.setTimestamp(Instant.now());
         ChatMessage saved = chatMessageService.save(chatMessage);
         messagingTemplate.convertAndSendToUser(
-                chatMessage.getRecipientUuid(),"/queue/messages", new ChatNotification(saved.getUuid(), saved.getChatId(), saved.getSenderUuid()));
+                saved.getRecipientUuid(),
+                "/queue/messages",
+                ChatNotification.builder()
+                        .messageUuid(saved.getUuid())
+                        .chatId(saved.getChatId())
+                        .senderUuid(saved.getSenderUuid())
+                        .contentPreview(saved.getContent())
+                        .build());
     }
 }

@@ -6,11 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class ChatNotification {
     private String messageUuid;
     private String chatId;
     private String senderUuid;
+    private String contentPreview;
 }
