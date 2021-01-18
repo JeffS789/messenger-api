@@ -1,0 +1,19 @@
+server:
+  port: 8082
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://artfx-dev.cxgbinaycozx.us-east-2.rds.amazonaws.com:3306/artfx?serverTimezone=UTC
+    username: admin
+    password: Q?n+Z{ea4eR=]{TX
+  main:
+    allow-bean-definition-overriding: true
+
+logging:
+  name: log
+
+### nohup java -jar -Dspring.profiles.active=aws artfx.jar
+### nohup java -jar -Dspring.profiles.active=aws artfx-gateway.jar
