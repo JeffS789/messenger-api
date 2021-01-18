@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/chatrooms")
+@RequestMapping("/messages/api/chatrooms")
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;

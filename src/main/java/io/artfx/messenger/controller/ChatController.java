@@ -25,6 +25,7 @@ public class ChatController {
 
     @MessageMapping("/chat")
     public void onMessage(@Payload Message message) {
+        log.info("Message recieved");
         ChatMessage chatMessage = new ChatMessage(message);
         String chatId = chatRoomService.getChatId(chatMessage.getSenderUuid(), chatMessage.getRecipientUuid());
         chatMessage.setChatId(chatId);
