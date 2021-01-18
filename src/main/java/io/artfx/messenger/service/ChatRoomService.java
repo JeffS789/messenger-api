@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -60,7 +62,8 @@ public class ChatRoomService {
         if(chatRoom.isPresent()) {
             return chatRoom.get().getChatId();
         }
-        String chatId = senderUuid + "_" + recipientUuid;
+        String id = senderUuid + "_" + recipientUuid;
+        String chatId = UUID.nameUUIDFromBytes(id.getBytes()).toString();
         ChatRoom senderRecipient = ChatRoom
                 .builder()
                 .chatId(chatId)

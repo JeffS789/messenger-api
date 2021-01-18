@@ -37,6 +37,7 @@ public class ChatController {
                         .messageUuid(saved.getUuid())
                         .chatId(saved.getChatId())
                         .senderUuid(saved.getSenderUuid())
+                        .recipientUuid(saved.getRecipientUuid())
                         .contentPreview(saved.getContent())
                         .build());
     }

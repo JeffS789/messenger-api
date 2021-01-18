@@ -13,5 +13,6 @@ public class ChatNotification {
     private String messageUuid;
     private String chatId;
     private String senderUuid;
+    private String recipientUuid;
     private String contentPreview;
 }
